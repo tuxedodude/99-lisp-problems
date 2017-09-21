@@ -314,12 +314,28 @@ Example:
 * (combination 3 '(a b c d e f))
 ((A B C) (A B D) (A B E) ... )[/text]
 
-(define (remove ele lst)
-	(let (I (find ele lst))
-		(append (slice lst 0 I) (slice lst (+ 1 I)))))
+(define (combinations N lst , I)
+	(if (< N 0) nil
+			(= N 0) '()
+			(= N 1) (map list lst)
+			true
+		(let (I (- N 1))
+			(if (or (>= I (length lst)) (< N 2)) '()
+				(let (A (slice lst 0 I) B (slice lst I))
+					(append (combine A B) (combinations N (rest lst))))))))
 
-;; C(N, K)
+(define (combine elems lst)
+	(if (null? lst) '()
+			(append (list (append elems (list (first lst))))
+							(combine elems (rest lst)))))
 
+(assert= (combinations 2 '(a b c)) '((a b) (a c) (b c)) )
+(assert= (combinations 2 '(a b)) '((a b)) )
+(assert= (combinations 1 '(a b c)) '((a) (b) (c)) )
+(assert= (combinations 0 '(a b c)) '())
+(assert= (combinations 1 '(a)) '((a)))
+(assert= (combinations 3 '(a b c)) '((a b c)))
+(assert= (combinations 3 '(a b)) '())
 
 (silent)
 
